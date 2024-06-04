@@ -1,7 +1,0 @@
-CREATE TABLE EC_Value (
-    time TIMESTAMP NOT NULL,
-    beforeEC NUMBER NOT NULL,
-    spongeEC NUMBER NOT NULL,
-    afterEC NUMBER NOT NULL,
-    PRIMARY KEY (time)
-);
