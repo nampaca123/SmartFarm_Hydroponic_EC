@@ -1,11 +1,11 @@
 import sqlite3
 
 def making_db():
-    connection = sqlite3.connect(':memory:')
+    connection = sqlite3.connect('onboard.db')
     cursor = connection.cursor()
 
     create_table_query = """
-    CREATE TABLE EC_Value (
+    CREATE TABLE IF NOT EXISTS EC_Value (
         time TIMESTAMP NOT NULL,
         outerEC REAL NOT NULL,
         spongeEC REAL NOT NULL,
