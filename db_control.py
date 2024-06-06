@@ -4,6 +4,13 @@ from read_EC import read_EC
 from datetime import datetime, timedelta
 import threading
 import time
+import subprocess
+import sys
+try:
+    from dateutil.relativedelta import relativedelta
+except ImportError:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "python-dateutil"])
+    from dateutil.relativedelta import relativedelta
 
 # DB 생성
 connection, cursor = making_db()
@@ -51,11 +58,11 @@ def returning_time_range(option):
     elif option == '1_week':
         return now - timedelta(weeks=1), now
     elif option == '1_month':
-        return now - timedelta(days=30), now
+        return now - relativedelta(months=1), now
     elif option == '6_months':
-        return now - timedelta(days=182), now
+        return now - relativedelta(months=6), now
     else:
-        raise ValueError("Invalid option for the time range")
+        raise ValueError("Invalid option")
 
 # 시간 범위에 따른 데이터를 조회하는 함수
 def search_based_time_range(option):
