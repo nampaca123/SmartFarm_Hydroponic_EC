@@ -123,7 +123,7 @@ def plotting_outer(ec_range_list):#,sensor_data):
     #tmp_ec_data = pd.read_csv('tmp_ec_data.csv')
     #sensor_data = tmp_ec_data['feed_ec'].to_list()
     EC_table = search_based_time_range(120,'second') # Time, OuterEC, SpongeEC
-    sensor_data = tmp_ec_data['OuterEC'].to_list()
+    sensor_data = EC_table['OuterEC'].to_list()
     #plt.plot(sensor_data)
     #plt.figure(figsize=(12,8))
     y = np.array(sensor_data)
@@ -151,7 +151,7 @@ def plotting_sponge(ec_range_list):#,sensor_data):
     #tmp_ec_data = pd.read_csv('tmp_ec_data.csv')
     #sensor_data = tmp_ec_data['feed_ec'].to_list()
     EC_table = search_based_time_range(120,'second') # Time, OuterEC, SpongeEC
-    sensor_data = tmp_ec_data['SpongeEC'].to_list()
+    sensor_data = EC_table['SpongeEC'].to_list()
     #plt.plot(sensor_data)
     #plt.figure(figsize=(12,8))
     y = np.array(sensor_data)
