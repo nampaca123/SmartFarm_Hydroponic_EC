@@ -11,24 +11,29 @@ try:
 except ImportError:
     subprocess.check_call([sys.executable, "-m", "pip", "install", "python-dateutil"])
     from dateutil.relativedelta import relativedelta
+import pandas as pd
 
 # DB 생성
 connection, cursor = making_db()
-
-# EC 센서에서 전달받은 값. 현재는 임시값
-outerEC_value = 1.23
-spongeEC_value= 0.98
+tmp_ec_data = pd.read_csv('tmp_ec_data.csv')
+tmp_ec_data2 = pd.read_csv('tmp_ec_data2.csv')
 
 # 10초 간격으로 데이터를 삽입하는 함수
 def inserting_data_10sec():
     global stop_thread
     # 각 스레드에서 새로운 데이터베이스 연결 생성
     connection, cursor = making_db()
+    tmp_ec_data = pd.read_csv('tmp_ec_data.csv')
+    tmp_ec_data2 = pd.read_csv('tmp_ec_data2.csv')  
+    tmp_ec_data = tmp_ec_data['feed_ec'].to_list()
+    tmp_ec_data2 = tmp_ec_data2['feed_ec'].to_list()
+    n = 0
     while not stop_thread:
         current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         # 예시값임. 추후 실제 센서의 값으로 변경
-        outerEC = outerEC_value
-        spongeEC = spongeEC_value
+        outerEC = tmp_ec_data[n]
+        spongeEC = tmp_ec_data2[n]
+        n += 1
         insert_EC(connection, cursor, current_time, outerEC, spongeEC)
         time.sleep(10)
     cursor.close()
@@ -67,10 +72,25 @@ def returning_time_range(option):
         return now - relativedelta(months=6), now
     else:
         raise ValueError("Invalid option")
+    
+def returning_time_range_ti(num,unit):
+    now = datetime.now()
+    if unit == 'second':
+        return now - timedelta(seconds=num), now
+    elif unit == 'minute':
+        return now - timedelta(minutes=num), now
+    elif unit == 'hour':
+        return now - timedelta(hours=num), now
+    elif unit == 'month':
+        return now - relativedelta(months=num), now
+    elif unit == 'year':
+        return now - relativedelta(years=num), now
+    else:
+        raise ValueError("Invalid option")
 
 # 시간 범위에 따른 데이터를 조회하는 함수
-def search_based_time_range(option):
-    start_time, end_time = returning_time_range(option)
+def search_based_time_range(num,unit):
+    start_time, end_time = returning_time_range_ti(num,unit)
     ectable = read_EC(cursor, start_time.strftime('%Y-%m-%d %H:%M:%S'), end_time.strftime('%Y-%m-%d %H:%M:%S'))
     return ectable
 
@@ -93,13 +113,14 @@ def yeasterday_4division():
     
     return yesterday_dataframes
 
-# 밑부터는 정상 가동 여부 실험. 최종 완성 작업 시 메인 구동 파일에 복사붙여넣기 시에는 불필요한 코드들임
 
+# 밑부터는 정상 가동 여부 실험. 최종 완성 작업 시 메인 구동 파일에 복사붙여넣기 시에는 불필요한 코드들임
+'''
 # 데이터를 10초 간격으로 삽입 시작
 start_insert_EC()
 
 # 60초 후 데이터 삽입 중지
-time.sleep(60)
+time.sleep(420)
 stop_insert_EC()
 
 # 6시간 동안의 데이터 조회
@@ -121,3 +142,4 @@ print(ydf4)
 # 연결 종료
 cursor.close()
 connection.close()
+'''
