@@ -6,7 +6,7 @@ import time
 
 
 if __name__ == '__main__':
-    connection, cursor = making_db()
+    
     start_insert_EC()
 
     # 60초 후 데이터 삽입 중지
