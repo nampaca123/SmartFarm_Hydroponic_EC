@@ -93,7 +93,6 @@ def yeasterday_4division():
     
     return yesterday_dataframes
 
-
 # 밑부터는 정상 가동 여부 실험. 최종 완성 작업 시 메인 구동 파일에 복사붙여넣기 시에는 불필요한 코드들임
 
 # 데이터를 10초 간격으로 삽입 시작
