@@ -12,11 +12,18 @@ except ImportError:
     subprocess.check_call([sys.executable, "-m", "pip", "install", "python-dateutil"])
     from dateutil.relativedelta import relativedelta
 import pandas as pd
+from flask import g
+import sqlite3
 
 # DB 생성
 connection, cursor = making_db()
 tmp_ec_data = pd.read_csv('tmp_ec_data.csv')
 tmp_ec_data2 = pd.read_csv('tmp_ec_data2.csv')
+
+def get_db():
+    if 'db' not in g:
+        g.db = sqlite3.connect('onboard.db') 
+    return g.db
 
 # 10초 간격으로 데이터를 삽입하는 함수
 def inserting_data_10sec():
@@ -90,6 +97,8 @@ def returning_time_range_ti(num,unit):
 
 # 시간 범위에 따른 데이터를 조회하는 함수
 def search_based_time_range(num,unit):
+    connection = get_db()
+    cursor = connection.cursor()
     start_time, end_time = returning_time_range_ti(num,unit)
     ectable = read_EC(cursor, start_time.strftime('%Y-%m-%d %H:%M:%S'), end_time.strftime('%Y-%m-%d %H:%M:%S'))
     return ectable
