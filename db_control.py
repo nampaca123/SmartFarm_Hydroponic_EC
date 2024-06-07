@@ -28,23 +28,25 @@ def get_db():
 # 10초 간격으로 데이터를 삽입하는 함수
 def inserting_data_10sec():
     global stop_thread
-    # 각 스레드에서 새로운 데이터베이스 연결 생성
-    connection, cursor = making_db()
-    tmp_ec_data = pd.read_csv('tmp_ec_data.csv')
-    tmp_ec_data2 = pd.read_csv('tmp_ec_data2.csv')  
-    tmp_ec_data = tmp_ec_data['feed_ec'].to_list()
-    tmp_ec_data2 = tmp_ec_data2['feed_ec'].to_list()
-    n = 0
-    while not stop_thread:
-        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        # 예시값임. 추후 실제 센서의 값으로 변경
-        outerEC = tmp_ec_data[n]
-        spongeEC = tmp_ec_data2[n]
-        n += 1
-        insert_EC(connection, cursor, current_time, outerEC, spongeEC)
-        time.sleep(10)
-    cursor.close()
-    connection.close()
+    try:
+        connection = get_db()
+        cursor = connection.cursor()
+        tmp_ec_data = pd.read_csv('tmp_ec_data.csv')['feed_ec'].to_list()
+        tmp_ec_data2 = pd.read_csv('tmp_ec_data2.csv')['feed_ec'].to_list()
+        n = 0
+        while not stop_thread:
+            current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            outerEC = tmp_ec_data[n]
+            spongeEC = tmp_ec_data2[n]
+            n += 1
+            insert_EC(connection, cursor, current_time, outerEC, spongeEC)
+            time.sleep(10)
+    except Exception as e:
+        print(f"Error occurred: {e}")
+    finally:
+        if 'db' in g:
+            g.db.close()
+
 
 stop_thread = False
 thread = None
@@ -129,7 +131,7 @@ def yeasterday_4division():
 start_insert_EC()
 
 # 60초 후 데이터 삽입 중지
-time.sleep(420)
+time.sleep(60)
 stop_insert_EC()
 
 # 6시간 동안의 데이터 조회
@@ -151,4 +153,5 @@ print(ydf4)
 # 연결 종료
 cursor.close()
 connection.close()
+
 '''

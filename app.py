@@ -11,6 +11,8 @@ import matplotlib
 from datetime import datetime,timedelta
 from db_control import search_based_time_range
 
+import sqlite3
+
 matplotlib.use('agg')
 
 # data_update는 모든 엔드포인트에서 실행할거임. 아니면 아예 data_update만 계속 돌리는 .py파일 만들고 실행시켜놔도 무방
@@ -22,6 +24,11 @@ matplotlib.use('agg')
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
+# 데이터베이스 연결 함수
+def get_db():
+    if 'db' not in g:
+        g.db = sqlite3.connect('onboard.db')
+    return g.db
 
 # AI Hub Data
 global all_plant_data
