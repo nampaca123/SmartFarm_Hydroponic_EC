@@ -15,6 +15,10 @@ except ImportError:
 # DB 생성
 connection, cursor = making_db()
 
+# EC 센서에서 전달받은 값. 현재는 임시값
+outerEC_value = 1.23
+spongeEC_value= 0.98
+
 # 10초 간격으로 데이터를 삽입하는 함수
 def inserting_data_10sec():
     global stop_thread
@@ -23,8 +27,8 @@ def inserting_data_10sec():
     while not stop_thread:
         current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         # 예시값임. 추후 실제 센서의 값으로 변경
-        outerEC = 1.23
-        spongeEC = 0.98
+        outerEC = outerEC_value
+        spongeEC = spongeEC_value
         insert_EC(connection, cursor, current_time, outerEC, spongeEC)
         time.sleep(10)
     cursor.close()
