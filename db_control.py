@@ -1,3 +1,6 @@
+# app.py로 이전한 파일. 더미 데이터
+
+'''
 from making_db import making_db
 from insert_EC import insert_EC
 from read_EC import read_EC
@@ -123,7 +126,7 @@ def yeasterday_4division():
         yesterday_dataframes.append(ectable)
     
     return yesterday_dataframes
-
+'''
 
 # 밑부터는 정상 가동 여부 실험. 최종 완성 작업 시 메인 구동 파일에 복사붙여넣기 시에는 불필요한 코드들임
 '''
